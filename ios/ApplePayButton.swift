@@ -14,7 +14,6 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
     super.init(frame: frame)
     self.addSubview(payButton)
     payButton.addTarget(self, action: #selector(startApplePay), for: .touchUpInside)
-
   }
 
   func setMerchantIdentifier(_ text: String) {
