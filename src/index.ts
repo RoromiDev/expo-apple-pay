@@ -1,1 +1,1 @@
-export { default as WebView, Props as WebViewProps } from './ExpoApplePay';
+export { default as ApplePayButton, Props as ApplePayButtonProps } from './ExpoApplePay';
