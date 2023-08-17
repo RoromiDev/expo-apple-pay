@@ -6,16 +6,16 @@ public class ExpoApplePayModule: Module {
 
     View(ExpoApplePayView.self) {
       Prop("merchantIdentifier") { (view, text: String) in
-        view.gyroView.setMerchantIdentifier(text)
+        view.applePayView.setMerchantIdentifier(text)
       }
       Prop("countryCode") { (view, text: String) in
-        view.gyroView.setCountryCode(text)
+        view.applePayView.setCountryCode(text)
       }
       Prop("currencyCode") { (view, text: String) in
-        view.gyroView.setCurrencyCode(text)
+        view.applePayView.setCurrencyCode(text)
       }
       Prop("amount") { (view, text: Double) in
-        view.gyroView.setAmount(text)
+        view.applePayView.setAmount(text)
       }
     }
   }

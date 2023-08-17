@@ -3,7 +3,10 @@ import { requireNativeViewManager } from "expo-modules-core";
 import * as React from "react";
 
 export type Props = {
-  url?: string;
+  merchantIdentifier: string;
+  countryCode: string;
+  currencyCode: string;
+  amount: number;
 } & ViewProps;
 
 const NativeView: React.ComponentType<Props> =
