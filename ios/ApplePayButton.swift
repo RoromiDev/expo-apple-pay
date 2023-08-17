@@ -9,6 +9,8 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   lazy var countryCode: String = ""
   lazy var currencyCode: String = ""
   lazy var amount: Double = 0
+  lazy var onSuccess: ((Any) -> Any)? = nil
+  lazy var onError: ((Any) -> Any)? = nil
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -31,6 +33,14 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   func setAmount(_ text: Double) {
     self.amount = text
   }
+
+  func setOnSuccess(_ callback: @escaping (Any) -> Any) {
+    self.onSuccess = callback
+  }
+
+  func setOnError(_ callback: @escaping (Any) -> Any) {
+    self.onError = callback
+  }
   
   @objc func startApplePay() {
     let request = PKPaymentRequest()
@@ -47,6 +57,7 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
     let vc = PKPaymentAuthorizationViewController(paymentRequest: request)
     vc?.delegate = self
     UIApplication.shared.keyWindow?.rootViewController?.present(vc!, animated: true, completion: nil)
+  
 }
 
   func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
@@ -55,8 +66,9 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
 
   func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
       let paymentData = payment.token.paymentData
-        print(payment.token);
-
+      print(payment.token);
+      self.onSuccess?(payment)
+      
       completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
   }
 
