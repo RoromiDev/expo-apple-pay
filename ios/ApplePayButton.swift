@@ -38,6 +38,7 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   }
 
   @objc func startApplePay() {
+    if PKPaymentAuthorizationViewController.canMakePayments() {
     let request = PKPaymentRequest()
     request.merchantIdentifier = self.merchantIdentifier
     request.supportedNetworks = [.visa, .masterCard]
@@ -52,7 +53,11 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
     let vc = PKPaymentAuthorizationViewController(paymentRequest: request)
     vc?.delegate = self
     UIApplication.shared.keyWindow?.rootViewController?.present(vc!, animated: true, completion: nil)
-  
+  } else {
+    let alertController = UIAlertController(title: "Erreur", message: "Apple Pay n'est pas supporté sur cet appareil", preferredStyle: .alert)
+    alertController.addAction(UIAlertAction(title: "OK", style: .default))
+    UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
+  }
 }
 
   func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
@@ -68,6 +73,12 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
       
       completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
   }
+
+  func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didFailWithError error: Error) {
+    let alertController = UIAlertController(title: "Erreur", message: "Le paiement Apple Pay a échoué : \(error.localizedDescription)", preferredStyle: .alert)
+    alertController.addAction(UIAlertAction(title: "OK", style: .default))
+    UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
+}
 
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
