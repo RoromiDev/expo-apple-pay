@@ -5,17 +5,20 @@ import PassKit
 
 class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   lazy var payButton = PKPaymentButton(paymentButtonType: .buy, paymentButtonStyle: .black)
+  var onTokenReceived: EventDispatcher? = nil
   lazy var merchantIdentifier: String = ""
   lazy var countryCode: String = ""
   lazy var currencyCode: String = ""
   lazy var amount: Double = 0
-  lazy var onSuccess: ((Any) -> Any)? = nil
-  lazy var onError: ((Any) -> Any)? = nil
 
   override init(frame: CGRect) {
     super.init(frame: frame)
     self.addSubview(payButton)
     payButton.addTarget(self, action: #selector(startApplePay), for: .touchUpInside)
+  }
+
+  func setEventDispatcher(_ eventDispatcher: EventDispatcher) {
+    self.onTokenReceived = eventDispatcher
   }
 
   func setMerchantIdentifier(_ text: String) {
@@ -34,18 +37,10 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
     self.amount = text
   }
 
-  func setOnSuccess(_ callback: @escaping (Any) -> Any) {
-    self.onSuccess = callback
-  }
-
-  func setOnError(_ callback: @escaping (Any) -> Any) {
-    self.onError = callback
-  }
-  
   @objc func startApplePay() {
     let request = PKPaymentRequest()
     request.merchantIdentifier = self.merchantIdentifier
-    request.supportedNetworks = [.visa, .masterCard, .amex]
+    request.supportedNetworks = [.visa, .masterCard]
     request.merchantCapabilities = .capability3DS
     request.countryCode = self.countryCode // Votre code de pays
     request.currencyCode = self.currencyCode // Votre devise
@@ -65,9 +60,11 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   }
 
   func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
+      print(payment.token)
       let paymentData = payment.token.paymentData
-      print(payment.token);
-      self.onSuccess?(payment)
+      self.onTokenReceived?([
+        "token": payment.token
+      ])
       
       completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
   }
