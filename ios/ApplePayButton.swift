@@ -37,7 +37,14 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
     self.amount = text
   }
 
+  func showAlert(_ title: String, _ message: String) {
+    let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+    alertController.addAction(UIAlertAction(title: "OK", style: .default))
+    UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
+  }
+
   @objc func startApplePay() {
+    showAlert("LAUNCH", "FUNCTION IS LAUNCHED")
     if PKPaymentAuthorizationViewController.canMakePayments() {
     let request = PKPaymentRequest()
     request.merchantIdentifier = self.merchantIdentifier
