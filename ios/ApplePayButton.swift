@@ -72,7 +72,9 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
       // print(payment.token)
       // let paymentData = payment.token.paymentData
       self.onTokenReceived?([
-        "token": payment.token.transactionIdentifier
+        "transactionIdentifier": payment.token.transactionIdentifier,
+        "paymentData": payment.token.paymentData,
+        "paymentNetwork": payment.token.paymentMethod.network,
       ])
       
       //completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
