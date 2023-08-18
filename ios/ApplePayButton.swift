@@ -69,13 +69,13 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   }
 
   func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
-      print(payment.token)
-      let paymentData = payment.token.paymentData
+      // print(payment.token)
+      // let paymentData = payment.token.paymentData
       self.onTokenReceived?([
-        "token": payment.token
+        "token": payment.token.transactionIdentifier
       ])
       
-      completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
+      //completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
   }
 
   func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didFailWithError error: Error) {
