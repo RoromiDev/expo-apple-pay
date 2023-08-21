@@ -74,13 +74,21 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
         "paymentData": NSString(data: payment.token.paymentData, encoding: NSUTF8StringEncoding),
         "paymentNetwork": payment.token.paymentMethod.network,
       ])
-      
       //completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
   }
 
   func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didFailWithError error: Error) {
      showAlert("Erreur", "Le paiement Apple Pay a échoué : \(error.localizedDescription)")
-}
+  }
+
+  @objc func onTokenSuccess() {
+    self.completion?(PKPaymentAuthorizationResult(status: .success, errors: nil))
+  }
+
+  @objc func onTokenFailed() {
+    let error = NSError(domain: "", code: 200, userInfo: [NSLocalizedDescriptionKey : "Failed to complete payment"])
+    self.completion?(PKPaymentAuthorizationResult(status: .failure, errors: [error]))
+  }
 
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
