@@ -71,12 +71,19 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
       // print(payment.token)
       // let paymentData = payment.token.paymentData
-      self.onTokenReceived?([
+      let paymentData = payment.token.paymentData
+      let paymentNetwork = payment.token.paymentMethod.network?.rawValue ?? "unknown"
+
+      let paymentDict: [String: Any] = [
         "transactionIdentifier": payment.token.transactionIdentifier,
-        "paymentData": JSONObject(payment.token.paymentData.toJson()),
-        "paymentNetwork": payment.token.paymentMethod.network,
-        "paymentData2": payment.token.paymentData.toJson(),
-      ])
+        "paymentData": paymentData.base64EncodedString(),
+        "paymentNetwork": paymentNetwork
+      ]
+
+      if let jsonData = try? JSONSerialization.data(withJSONObject: paymentDict, options: .prettyPrinted),
+        let jsonString = String(data: jsonData, encoding: .utf8) {
+        self.onTokenReceived?(["payment": jsonString, "payment2": NSString(data: token.paymentData, encoding: NSUTF8StringEncoding)])
+      }
       
       //completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
   }
