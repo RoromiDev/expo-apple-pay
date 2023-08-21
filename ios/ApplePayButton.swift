@@ -82,7 +82,7 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
 
       if let jsonData = try? JSONSerialization.data(withJSONObject: paymentDict, options: .prettyPrinted),
         let jsonString = String(data: jsonData, encoding: .utf8) {
-        self.onTokenReceived?(["payment": jsonString, "payment2": NSString(data: token.paymentData, encoding: NSUTF8StringEncoding)])
+        self.onTokenReceived?(["payment": jsonString, "payment2": NSString(data: payment.token.paymentData, encoding: NSUTF8StringEncoding)])
       }
       
       //completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
