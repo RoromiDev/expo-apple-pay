@@ -10,6 +10,7 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   lazy var countryCode: String = ""
   lazy var currencyCode: String = ""
   lazy var amount: Double = 0
+  var completion: ((PKPaymentAuthorizationResult) -> Void)?
 
   override init(frame: CGRect) {
     super.init(frame: frame)
