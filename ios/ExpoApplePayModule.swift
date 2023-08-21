@@ -4,16 +4,17 @@ public class ExpoApplePayModule: Module {
   public func definition() -> ModuleDefinition {
     Name("ExpoApplePay")
 
+    Function("onTokenSuccess") { (view: ExpoApplePayView) in
+      view.applePayView.onTokenSuccess()
+    }
+
+    Function("onTokenFailed") { (view: ExpoApplePayView) in
+      view.applePayView.onTokenFailed()
+    }
+
     View(ExpoApplePayView.self) {
       Events("onTokenReceived")
       
-      Method("onTokenSuccess") { (view) in
-        view.applePayView.onTokenSuccess()
-      }
-      Method("onTokenFailed") { (view) in
-        view.applePayView.onTokenFailed()
-      }
-
       Prop("merchantIdentifier") { (view, text: String) in
         view.applePayView.setMerchantIdentifier(text)
       }

@@ -73,6 +73,7 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
         "transactionIdentifier": payment.token.transactionIdentifier,
         "paymentData": NSString(data: payment.token.paymentData, encoding: NSUTF8StringEncoding),
         "paymentNetwork": payment.token.paymentMethod.network,
+        "onTokenSuccess": onTokenSuccess,
       ])
       //completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
   }
