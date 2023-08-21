@@ -3,8 +3,9 @@ import { requireNativeViewManager } from "expo-modules-core";
 import * as React from "react";
 
 export type OnTokenReceived = {
-  payment: any;
-  payment2: any;
+  transactionIdentifier: string;
+  paymentData: string;
+  paymentNetwork: string;
 };
 
 export type Props = {
