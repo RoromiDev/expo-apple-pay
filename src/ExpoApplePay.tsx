@@ -19,6 +19,8 @@ export type Props = {
 const NativeView: React.ComponentType<Props> =
   requireNativeViewManager("ExpoApplePay");
 
-export default function ExpoApplePay(props: Props) {
-  return <NativeView {...props} />;
-}
+const ExpoApplePay = React.forwardRef((props, ref) => {
+  return <NativeView {...props} ref={ref} />;
+});
+
+export default ExpoApplePay;

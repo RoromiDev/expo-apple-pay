@@ -70,11 +70,11 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   }
 
   func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
+      self.completion = completion
       self.onTokenReceived?([
         "transactionIdentifier": payment.token.transactionIdentifier,
         "paymentData": NSString(data: payment.token.paymentData, encoding: NSUTF8StringEncoding),
         "paymentNetwork": payment.token.paymentMethod.network,
-        "onTokenSuccess": onTokenSuccess,
       ])
       //completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
   }
