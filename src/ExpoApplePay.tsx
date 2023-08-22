@@ -16,13 +16,10 @@ export type Props = {
   onTokenReceived?: (event: { nativeEvent: OnTokenReceived }) => void;
 } & ViewProps;
 
-const NativeView: React.ComponentType<Props> =
-  requireNativeViewManager("ExpoApplePay");
+const NativeView = requireNativeViewManager("ExpoApplePay");
 
-const ExpoApplePay = React.forwardRef<React.ComponentType<Props>, Props>(
-  (props, ref) => {
-    return <NativeView {...props} ref={ref} />;
-  }
-);
+const ExpoApplePay = React.forwardRef((props, ref) => {
+  return <NativeView {...props} ref={ref} />;
+});
 
 export default ExpoApplePay;
