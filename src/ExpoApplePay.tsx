@@ -13,6 +13,7 @@ export type Props = {
   countryCode: string;
   currencyCode: string;
   amount: number;
+  paymentSummaryItems: Array<any>;
   onTokenReceived?: (event: { nativeEvent: OnTokenReceived }) => void;
 } & ViewProps;
 

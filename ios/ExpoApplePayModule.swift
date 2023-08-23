@@ -27,6 +27,9 @@ public class ExpoApplePayModule: Module {
       Prop("amount") { (view, text: Double) in
         view.applePayView.setAmount(text)
       }
+      Prop("paymentSummaryItems") { (view, items: Array<[String : Any]>) in
+        view.applePayView.setPaymentSummaryItems(items)
+      }
     }
   }
 }

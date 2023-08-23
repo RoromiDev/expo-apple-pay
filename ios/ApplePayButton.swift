@@ -2,14 +2,22 @@ import ExpoModulesCore
 import UIKit
 import CoreMotion
 import PassKit
+import os.log
 
 class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
-  lazy var payButton = PKPaymentButton(paymentButtonType: .buy, paymentButtonStyle: .black)
+  lazy var payButton: PKPaymentButton = {
+    if #available(iOS 11.2, *) {
+        return PKPaymentButton(paymentButtonType: .book, paymentButtonStyle: .black)
+    } else {
+        return PKPaymentButton(paymentButtonType: .buy, paymentButtonStyle: .black)
+    }
+  }()
   var onTokenReceived: EventDispatcher? = nil
   lazy var merchantIdentifier: String = ""
   lazy var countryCode: String = ""
   lazy var currencyCode: String = ""
   lazy var amount: Double = 0
+  lazy var paymentSummaryItems: Array<PKPaymentSummaryItem> = []
   var completion: ((PKPaymentAuthorizationResult) -> Void)?
 
   override init(frame: CGRect) {
@@ -44,6 +52,16 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
     UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
   }
 
+  func setPaymentSummaryItems(_ items: Array<[String: Any]>) {
+    self.paymentSummaryItems = items.map { item in
+      if let label = item["label"] as? String,
+         let amount = item["amount"] as? Double {
+        return PKPaymentSummaryItem(label: label, amount: NSDecimalNumber(value: amount))
+      }
+      return nil
+    }.compactMap { $0 }
+  }
+
   @objc func startApplePay() {
     if PKPaymentAuthorizationViewController.canMakePayments() {
     let request = PKPaymentRequest()
@@ -53,10 +71,7 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
     request.countryCode = self.countryCode // Votre code de pays
     request.currencyCode = self.currencyCode // Votre devise
     let amount = NSDecimalNumber(value: self.amount)
-    request.paymentSummaryItems = [
-        PKPaymentSummaryItem(label: "Votre produit", amount: amount)
-    ]
-
+    request.paymentSummaryItems = self.paymentSummaryItems
     let vc = PKPaymentAuthorizationViewController(paymentRequest: request)
     vc?.delegate = self
     UIApplication.shared.keyWindow?.rootViewController?.present(vc!, animated: true, completion: nil)
