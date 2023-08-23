@@ -23,6 +23,11 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   override init(frame: CGRect) {
     super.init(frame: frame)
     self.addSubview(payButton)
+    payButton.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      payButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+      payButton.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+    ])
     payButton.addTarget(self, action: #selector(startApplePay), for: .touchUpInside)
   }
 
@@ -44,6 +49,18 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
 
   func setAmount(_ text: Double) {
     self.amount = text
+  }
+
+  @objc func setWidth(_ text: Double) {
+   NSLayoutConstraint.activate([
+      payButton.widthAnchor.constraint(equalToConstant: text)
+    ])
+  }
+
+  @objc func setHeight(_ text: Double) {
+    NSLayoutConstraint.activate([
+      payButton.heightAnchor.constraint(equalToConstant: text)
+    ])
   }
 
   func showAlert(_ title: String, _ message: String) {
