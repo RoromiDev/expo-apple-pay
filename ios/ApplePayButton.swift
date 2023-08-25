@@ -13,6 +13,8 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   lazy var countryCode: String = ""
   lazy var currencyCode: String = ""
   lazy var amount: Double = 0
+  lazy var height: Double = 0
+  lazy var width: Double = 0
   lazy var paymentSummaryItems: Array<PKPaymentSummaryItem> = []
   var completion: ((PKPaymentAuthorizationResult) -> Void)?
 
@@ -41,12 +43,14 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   }
 
   @objc func setWidth(_ text: Double) {
+    self.width = text
    NSLayoutConstraint.activate([
       payButton.widthAnchor.constraint(equalToConstant: text)
     ])
   }
 
   @objc func setHeight(_ text: Double) {
+     self.height = text
     NSLayoutConstraint.activate([
       payButton.heightAnchor.constraint(equalToConstant: text)
     ])
@@ -67,7 +71,9 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
     payButton.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
       payButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-      payButton.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+      payButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+      payButton.widthAnchor.constraint(equalToConstant: self.width),
+      payButton.heightAnchor.constraint(equalToConstant: self.height)
     ])
     payButton.addTarget(self, action: #selector(startApplePay), for: .touchUpInside)
   }
