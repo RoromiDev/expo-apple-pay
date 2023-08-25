@@ -6,7 +6,7 @@ import os.log
 
 class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   lazy var payButton: PKPaymentButton = {
-    return PKPaymentButton(paymentButtonType: .buy, paymentButtonStyle: .black)
+    return PKPaymentButton(paymentButtonType: .pay, paymentButtonStyle: .black)
   }()
   var onTokenReceived: EventDispatcher? = nil
   lazy var merchantIdentifier: String = ""
@@ -62,10 +62,10 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
       if #available(iOS 11.2, *) {
         payButton = PKPaymentButton(paymentButtonType: .book, paymentButtonStyle: .black)
       } else {
-        payButton = PKPaymentButton(paymentButtonType: .buy, paymentButtonStyle: .black)
+        payButton = PKPaymentButton(paymentButtonType: .pay, paymentButtonStyle: .black)
       }
     } else {
-      payButton = PKPaymentButton(paymentButtonType: .buy, paymentButtonStyle: .black)
+      payButton = PKPaymentButton(paymentButtonType: .pay, paymentButtonStyle: .black)
     }
     self.addSubview(payButton)
     payButton.translatesAutoresizingMaskIntoConstraints = false
