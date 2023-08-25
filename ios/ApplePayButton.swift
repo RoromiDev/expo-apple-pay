@@ -6,7 +6,7 @@ import os.log
 
 class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   lazy var payButton: PKPaymentButton = {
-    return PKPaymentButton(paymentButtonType: .pay, paymentButtonStyle: .black)
+    return PKPaymentButton(paymentButtonType: .inStore, paymentButtonStyle: .black)
   }()
   var onTokenReceived: EventDispatcher? = nil
   lazy var merchantIdentifier: String = ""
@@ -20,6 +20,13 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
 
   override init(frame: CGRect) {
     super.init(frame: frame)
+    self.addSubview(payButton)
+    payButton.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      payButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+      payButton.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+    ])
+    payButton.addTarget(self, action: #selector(startApplePay), for: .touchUpInside)
   }
 
   func setEventDispatcher(_ eventDispatcher: EventDispatcher) {
@@ -43,39 +50,37 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   }
 
   @objc func setWidth(_ text: Double) {
-    self.width = text
-   NSLayoutConstraint.activate([
-      payButton.widthAnchor.constraint(equalToConstant: text)
-    ])
+    if (self.width == 0){
+      NSLayoutConstraint.activate([
+        self.payButton.widthAnchor.constraint(equalToConstant: text)
+      ])
+      self.width = text}
   }
 
   @objc func setHeight(_ text: Double) {
-     self.height = text
-    NSLayoutConstraint.activate([
-      payButton.heightAnchor.constraint(equalToConstant: text)
-    ])
+    if (self.height == 0){
+      NSLayoutConstraint.activate([
+        self.payButton.heightAnchor.constraint(equalToConstant: text)
+      ])
+      self.height = text}
   }
 
   @objc func setButtonType(_ text: String) {
-    payButton.removeFromSuperview()
     if (text == "book") {
-      if #available(iOS 11.2, *) {
-        payButton = PKPaymentButton(paymentButtonType: .book, paymentButtonStyle: .black)
-      } else {
-        payButton = PKPaymentButton(paymentButtonType: .pay, paymentButtonStyle: .black)
-      }
-    } else {
-      payButton = PKPaymentButton(paymentButtonType: .pay, paymentButtonStyle: .black)
+      self.payButton.removeFromSuperview()
+      
+      let newButton = PKPaymentButton(paymentButtonType: .book, paymentButtonStyle: PKPaymentButtonStyle.black)
+      self.addSubview(newButton)
+      newButton.translatesAutoresizingMaskIntoConstraints = false
+      NSLayoutConstraint.activate([
+        newButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+        newButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+        newButton.widthAnchor.constraint(equalToConstant: self.width),
+        newButton.heightAnchor.constraint(equalToConstant: self.height)
+      ])
+      newButton.addTarget(self, action: #selector(startApplePay), for: .touchUpInside)
+      self.payButton = newButton
     }
-    self.addSubview(payButton)
-    payButton.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([
-      payButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-      payButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-      payButton.widthAnchor.constraint(equalToConstant: self.width),
-      payButton.heightAnchor.constraint(equalToConstant: self.height)
-    ])
-    payButton.addTarget(self, action: #selector(startApplePay), for: .touchUpInside)
   }
 
   func showAlert(_ title: String, _ message: String) {
