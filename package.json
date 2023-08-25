@@ -1,6 +1,6 @@
 {
   "name": "expo-apple-pay",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "My new module",
   "main": "build/index.js",
   "types": "build/index.d.ts",

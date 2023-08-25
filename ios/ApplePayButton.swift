@@ -6,11 +6,7 @@ import os.log
 
 class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   lazy var payButton: PKPaymentButton = {
-    if #available(iOS 11.2, *) {
-        return PKPaymentButton(paymentButtonType: .book, paymentButtonStyle: .black)
-    } else {
-        return PKPaymentButton(paymentButtonType: .buy, paymentButtonStyle: .black)
-    }
+    return PKPaymentButton(paymentButtonType: .buy, paymentButtonStyle: .black)
   }()
   var onTokenReceived: EventDispatcher? = nil
   lazy var merchantIdentifier: String = ""
@@ -22,13 +18,6 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
 
   override init(frame: CGRect) {
     super.init(frame: frame)
-    self.addSubview(payButton)
-    payButton.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([
-      payButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-      payButton.centerYAnchor.constraint(equalTo: self.centerYAnchor)
-    ])
-    payButton.addTarget(self, action: #selector(startApplePay), for: .touchUpInside)
   }
 
   func setEventDispatcher(_ eventDispatcher: EventDispatcher) {
@@ -61,6 +50,26 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
     NSLayoutConstraint.activate([
       payButton.heightAnchor.constraint(equalToConstant: text)
     ])
+  }
+
+  @objc func setButtonType(_ text: String) {
+    payButton.removeFromSuperview()
+    if (text == "book") {
+      if #available(iOS 11.2, *) {
+        payButton = PKPaymentButton(paymentButtonType: .book, paymentButtonStyle: .black)
+      } else {
+        payButton = PKPaymentButton(paymentButtonType: .buy, paymentButtonStyle: .black)
+      }
+    } else {
+      payButton = PKPaymentButton(paymentButtonType: .buy, paymentButtonStyle: .black)
+    }
+    self.addSubview(payButton)
+    payButton.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      payButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+      payButton.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+    ])
+    payButton.addTarget(self, action: #selector(startApplePay), for: .touchUpInside)
   }
 
   func showAlert(_ title: String, _ message: String) {
@@ -108,7 +117,6 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
         "paymentData": NSString(data: payment.token.paymentData, encoding: NSUTF8StringEncoding),
         "paymentNetwork": payment.token.paymentMethod.network,
       ])
-      //completion(PKPaymentAuthorizationResult(status: .success, errors: nil))
   }
 
   func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didFailWithError error: Error) {

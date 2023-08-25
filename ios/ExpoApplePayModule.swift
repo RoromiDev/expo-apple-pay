@@ -36,6 +36,9 @@ public class ExpoApplePayModule: Module {
       Prop("width") { (view, text: Double) in
         view.applePayView.setWidth(text)
       }
+      Prop("type") { (view, text: String) in
+        view.applePayView.setButtonType(text)
+      }
     }
   }
 }

@@ -16,6 +16,7 @@ export type Props = {
   paymentSummaryItems: Array<any>;
   height: number;
   width: number;
+  type: string;
   onTokenReceived?: (event: { nativeEvent: OnTokenReceived }) => void;
 } & ViewProps;
 
