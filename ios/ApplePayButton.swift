@@ -15,6 +15,7 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   lazy var amount: Double = 0
   lazy var height: Double = 0
   lazy var width: Double = 0
+  lazy var buttonType: String = "buy"
   lazy var paymentSummaryItems: Array<PKPaymentSummaryItem> = []
   var completion: ((PKPaymentAuthorizationResult) -> Void)?
 
@@ -66,7 +67,8 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   }
 
   @objc func setButtonType(_ text: String) {
-    if (text == "book") {
+    if (text == "book" && self.buttonType != "book") {
+      self.buttonType = "book"
       self.payButton.removeFromSuperview()
       
       let newButton = PKPaymentButton(paymentButtonType: .book, paymentButtonStyle: PKPaymentButtonStyle.black)
