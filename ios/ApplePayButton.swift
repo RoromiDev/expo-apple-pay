@@ -24,6 +24,7 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
 
   override init(frame: CGRect) {
     super.init(frame: frame)
+    showAlert("INITIII")
     if (buttonType == "book") {
       self.payButton.removeFromSuperview()
       self.addSubview(bookButton)
