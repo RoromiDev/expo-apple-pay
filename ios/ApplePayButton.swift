@@ -8,6 +8,9 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   lazy var payButton: PKPaymentButton = {
     return PKPaymentButton(paymentButtonType: .inStore, paymentButtonStyle: .black)
   }()
+  lazy var bookButton: PKPaymentButton = {
+    return PKPaymentButton(paymentButtonType: .book, paymentButtonStyle: .black)
+  }()
   var onTokenReceived: EventDispatcher? = nil
   lazy var merchantIdentifier: String = ""
   lazy var countryCode: String = ""
@@ -21,13 +24,21 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
 
   override init(frame: CGRect) {
     super.init(frame: frame)
-    self.addSubview(payButton)
-    payButton.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([
-      payButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+    if (buttonType == "book") {
+      self.payButton.removeFromSuperview()
+      self.addSubview(bookButton)
+      payButton.translatesAutoresizingMaskIntoConstraints = false
+      payButton.centerXAnchor.constraint(equalTo: self.centerXAnchor)
       payButton.centerYAnchor.constraint(equalTo: self.centerYAnchor)
-    ])
-    payButton.addTarget(self, action: #selector(startApplePay), for: .touchUpInside)
+      payButton.addTarget(self, action: #selector(startApplePay), for: .touchUpInside)
+    } else {
+      self.bookButton.removeFromSuperview()
+      self.addSubview(payButton)
+      bookButton.translatesAutoresizingMaskIntoConstraints = false
+      bookButton.centerXAnchor.constraint(equalTo: self.centerXAnchor)
+      bookButton.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+      bookButton.addTarget(self, action: #selector(startApplePay), for: .touchUpInside)
+    }
   }
 
   func setEventDispatcher(_ eventDispatcher: EventDispatcher) {
@@ -51,37 +62,37 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   }
 
   @objc func setWidth(_ text: Double) {
-    if (self.width == 0){
-      NSLayoutConstraint.activate([
-        self.payButton.widthAnchor.constraint(equalToConstant: text)
-      ])
-      self.width = text}
+    if (self.buttonType == "book") {
+      self.bookButton.translatesAutoresizingMaskIntoConstraints = false
+      let widthConstraint2 = self.bookButton.widthAnchor.constraint(equalToConstant: text)
+      widthConstraint2.isActive = true
+    } else {
+      self.payButton.translatesAutoresizingMaskIntoConstraints = false
+      let widthConstraint1 = self.payButton.widthAnchor.constraint(equalToConstant: text)
+      widthConstraint1.isActive = true
+    }   
   }
 
   @objc func setHeight(_ text: Double) {
-    if (self.height == 0){
-      NSLayoutConstraint.activate([
-        self.payButton.heightAnchor.constraint(equalToConstant: text)
-      ])
-      self.height = text}
+    if (self.buttonType == "book") {
+      self.bookButton.translatesAutoresizingMaskIntoConstraints = false
+      let heightConstraint2 = self.bookButton.heightAnchor.constraint(equalToConstant: text)
+      heightConstraint2.isActive = true
+    } else {
+      self.payButton.translatesAutoresizingMaskIntoConstraints = false
+      let heightConstraint1 = self.payButton.heightAnchor.constraint(equalToConstant: text)
+      heightConstraint1.isActive = true
+    }  
   }
 
   @objc func setButtonType(_ text: String) {
-    if (text == "book" && self.buttonType != "book") {
-      self.buttonType = "book"
+     self.buttonType = text
+     if (text == "book") {
       self.payButton.removeFromSuperview()
-      
-      let newButton = PKPaymentButton(paymentButtonType: .book, paymentButtonStyle: PKPaymentButtonStyle.black)
-      self.addSubview(newButton)
-      newButton.translatesAutoresizingMaskIntoConstraints = false
-      NSLayoutConstraint.activate([
-        newButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-        newButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-        newButton.widthAnchor.constraint(equalToConstant: self.width),
-        newButton.heightAnchor.constraint(equalToConstant: self.height)
-      ])
-      newButton.addTarget(self, action: #selector(startApplePay), for: .touchUpInside)
-      self.payButton = newButton
+      self.addSubview(bookButton)
+    } else {
+      self.bookButton.removeFromSuperview()
+      self.addSubview(payButton)
     }
   }
 
