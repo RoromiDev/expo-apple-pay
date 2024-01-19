@@ -4,6 +4,7 @@ import ExpoModulesCore
 // to apply the proper styling (e.g. border radius and shadows).
 class ExpoApplePayView: ExpoView {
   let onTokenReceived = EventDispatcher()
+  let onCompleted = EventDispatcher()
   let applePayView = ApplePayButton()
 
   required init(appContext: AppContext? = nil) {
@@ -11,6 +12,7 @@ class ExpoApplePayView: ExpoView {
     clipsToBounds = true
     addSubview(applePayView)
     applePayView.setEventDispatcher(onTokenReceived)
+    applePayView.setEventDispatcher(onCompleted)
   }
 
   override func layoutSubviews() {

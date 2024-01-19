@@ -12,6 +12,7 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
     return PKPaymentButton(paymentButtonType: .book, paymentButtonStyle: .black)
   }()
   var onTokenReceived: EventDispatcher? = nil
+  var onCompleted: EventDispatcher? = nil
   private var didSetCount = 0 {
     didSet {
       if didSetCount == 3 {
@@ -53,6 +54,7 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
 
   func setEventDispatcher(_ eventDispatcher: EventDispatcher) {
     self.onTokenReceived = eventDispatcher
+    self.onCompleted = eventDispatcher
   }
 
   func setMerchantIdentifier(_ text: String) {
@@ -142,7 +144,11 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
 }
 
   func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
-        controller.dismiss(animated: true, completion: nil)
+        controller.dismiss(animated: true, completion: {
+          self.onCompleted?([
+            "status": "success",
+          ])
+        })
   }
 
   func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
