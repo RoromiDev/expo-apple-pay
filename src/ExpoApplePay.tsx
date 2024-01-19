@@ -8,10 +8,6 @@ export type OnTokenReceived = {
   paymentNetwork: string;
 };
 
-export type OnCompleted = {
-  status: string;
-};
-
 export type Props = {
   merchantIdentifier: string;
   countryCode: string;
@@ -22,7 +18,6 @@ export type Props = {
   width: number;
   type: string;
   onTokenReceived?: (event: { nativeEvent: OnTokenReceived }) => void;
-  onCompleted?: (event: { nativeEvent: OnCompleted }) => void;
 } & ViewProps;
 
 const NativeView = requireNativeViewManager("ExpoApplePay");

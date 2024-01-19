@@ -6,8 +6,6 @@ public class ExpoApplePayModule: Module {
 
     View(ExpoApplePayView.self) {
       Events("onTokenReceived")
-
-      Events("onCompleted")
       
       AsyncFunction("onTokenSuccess") { (view: ExpoApplePayView) in
         view.applePayView.onTokenSuccess()
