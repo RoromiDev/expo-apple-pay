@@ -11,6 +11,9 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
   lazy var bookButton: PKPaymentButton = {
     return PKPaymentButton(paymentButtonType: .book, paymentButtonStyle: .black)
   }()
+  lazy var continueButton: PKPaymentButton = {
+    return PKPaymentButton(paymentButtonType: .continue, paymentButtonStyle: .black)
+  }()
   var onTokenReceived: EventDispatcher? = nil
   private var didSetCount = 0 {
     didSet {
@@ -94,7 +97,17 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
         payButton.centerYAnchor.constraint(equalTo: self.centerYAnchor)
       ])
       payButton.addTarget(self, action: #selector(startApplePay), for: .touchUpInside)
-    } else {
+    }  else if (self.buttonType == "continue") {
+      self.addSubview(continueButton)
+      continueButton.translatesAutoresizingMaskIntoConstraints = false
+      NSLayoutConstraint.activate([
+        continueButton.widthAnchor.constraint(equalToConstant: self.width), // Largeur
+        continueButton.heightAnchor.constraint(equalToConstant: self.height), // Hauteur
+        continueButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+        continueButton.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+      ])
+      continueButton.addTarget(self, action: #selector(startApplePay), for: .touchUpInside)
+    }  else {
       self.addSubview(bookButton)
       bookButton.translatesAutoresizingMaskIntoConstraints = false
       NSLayoutConstraint.activate([
