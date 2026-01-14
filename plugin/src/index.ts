@@ -1,7 +1,13 @@
-import { ConfigPlugin } from 'expo/config-plugins';
+import { ConfigPlugin, withEntitlementsPlist } from "@expo/config-plugins";
 
-const withMyApiKey: ConfigPlugin = config => {
-  return config;
+const withApplePay: ConfigPlugin<{ merchantIdentifiers?: string[] }> = (
+  config,
+  { merchantIdentifiers = [] } = {}
+) => {
+  return withEntitlementsPlist(config, (config) => {
+    config.modResults["com.apple.developer.in-app-payments"] = merchantIdentifiers;
+    return config;
+  });
 };
 
-export default withMyApiKey;
+export default withApplePay;
