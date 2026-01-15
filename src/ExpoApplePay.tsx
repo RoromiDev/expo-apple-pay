@@ -6,6 +6,7 @@ import { ViewProps } from "react-native";
 export type ApplePayButtonType =
   | "plain"
   | "buy"
+  | "pay"
   | "setUp"
   | "inStore"
   | "donate"
