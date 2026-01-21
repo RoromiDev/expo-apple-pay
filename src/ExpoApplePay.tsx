@@ -6,7 +6,6 @@ import { ViewProps } from "react-native";
 export type ApplePayButtonType =
   | "plain"
   | "buy"
-  | "pay"
   | "setUp"
   | "inStore"
   | "donate"
@@ -67,12 +66,12 @@ export type OnTokenReceived = {
   paymentNetwork: string | null;
   paymentMethodDisplayName: string | null;
   paymentMethodType:
-    | "debit"
-    | "credit"
-    | "prepaid"
-    | "store"
-    | "eMoney"
-    | "unknown";
+  | "debit"
+  | "credit"
+  | "prepaid"
+  | "store"
+  | "eMoney"
+  | "unknown";
 };
 
 // MARK: - Component Props

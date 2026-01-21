@@ -154,8 +154,6 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
         switch value.lowercased() {
         case "plain":
             return .plain
-        case "pay":
-            return .pay
         case "buy":
             return .buy
         case "setup", "setup":
