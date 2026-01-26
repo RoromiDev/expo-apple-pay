@@ -8,12 +8,16 @@ public class ExpoApplePayModule: Module {
             Events("onTokenReceived")
             
             // MARK: - View Functions
-            AsyncFunction("onTokenSuccess") { (view: ExpoApplePayView) in
-                view.applePayView.onTokenSuccess()
+            AsyncFunction("onTokenSuccess") { (view: ExpoApplePayView, promise: Promise) in
+                view.applePayView.onTokenSuccess {
+                    promise.resolve(nil)
+                }
             }
 
-            AsyncFunction("onTokenFailed") { (view: ExpoApplePayView) in
-                view.applePayView.onTokenFailed()
+            AsyncFunction("onTokenFailed") { (view: ExpoApplePayView, promise: Promise) in
+                view.applePayView.onTokenFailed {
+                    promise.resolve(nil)
+                }
             }
 
             // MARK: - Payment Configuration Props

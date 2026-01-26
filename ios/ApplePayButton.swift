@@ -7,6 +7,7 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
     // MARK: - Properties
     var onTokenReceived: EventDispatcher? = nil
     var completion: ((PKPaymentAuthorizationResult) -> Void)?
+    var onDismissCallback: (() -> Void)?
     
     // Payment configuration
     private var merchantIdentifier: String = ""
@@ -370,18 +371,23 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
     }
     
     // MARK: - Token Handlers
-    @objc func onTokenSuccess() {
+    func onTokenSuccess(onDismiss: @escaping () -> Void) {
+        self.onDismissCallback = onDismiss
         completion?(PKPaymentAuthorizationResult(status: .success, errors: nil))
     }
-    
-    @objc func onTokenFailed() {
+
+    func onTokenFailed(onDismiss: @escaping () -> Void) {
+        self.onDismissCallback = onDismiss
         let error = NSError(domain: "ApplePayError", code: 200, userInfo: [NSLocalizedDescriptionKey: "Failed to complete payment"])
         completion?(PKPaymentAuthorizationResult(status: .failure, errors: [error]))
     }
     
     // MARK: - PKPaymentAuthorizationViewControllerDelegate
     func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
-        controller.dismiss(animated: true)
+        controller.dismiss(animated: true) { [weak self] in
+            self?.onDismissCallback?()
+            self?.onDismissCallback = nil
+        }
     }
     
     func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
