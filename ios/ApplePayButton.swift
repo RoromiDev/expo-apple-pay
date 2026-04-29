@@ -368,23 +368,33 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
         }
         
         viewController.delegate = self
-        
-        // Use modern window scene API
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let rootViewController = windowScene.windows.first?.rootViewController {
-            rootViewController.present(viewController, animated: true)
-        }
+
+        topPresentingViewController()?.present(viewController, animated: true)
     }
-    
+
     // MARK: - Alert Helper
     private func showAlert(_ title: String, _ message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "OK", style: .default))
-        
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let rootViewController = windowScene.windows.first?.rootViewController {
-            rootViewController.present(alertController, animated: true)
+
+        topPresentingViewController()?.present(alertController, animated: true)
+    }
+
+    // MARK: - Presenter Resolution
+    // Walks up the active scene's view-controller chain so we can present from the topmost
+    // controller. Required when the button lives inside a modal (e.g. React Navigation
+    // `presentation: "modal"`) — presenting from the root VC silently fails because the
+    // root already has a `presentedViewController`.
+    private func topPresentingViewController() -> UIViewController? {
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let activeScene = scenes.first(where: { $0.activationState == .foregroundActive }) ?? scenes.first
+        let keyWindow = activeScene?.windows.first(where: { $0.isKeyWindow }) ?? activeScene?.windows.first
+
+        guard var top = keyWindow?.rootViewController else { return nil }
+        while let presented = top.presentedViewController, !presented.isBeingDismissed {
+            top = presented
         }
+        return top
     }
     
     // MARK: - Token Handlers
