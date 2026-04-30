@@ -330,23 +330,6 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
         payButton = button
     }
     
-    // MARK: - Summary Items
-    // PassKit rejects requests whose grand total is 0. When the merchant wants to tokenize
-    // without an immediate charge (e.g. updating a subscription's payment method), we mark
-    // the grand total as `.pending` so the Apple Pay sheet accepts the request and only
-    // tokenizes the card.
-    private func summaryItemsForRequest() -> [PKPaymentSummaryItem] {
-        guard amount <= 0, let last = paymentSummaryItems.last else {
-            return paymentSummaryItems
-        }
-        let pendingTotal = PKPaymentSummaryItem(
-            label: last.label,
-            amount: NSDecimalNumber.zero,
-            type: .pending
-        )
-        return paymentSummaryItems.dropLast() + [pendingTotal]
-    }
-
     // MARK: - Apple Pay Flow
     @objc private func startApplePay() {
         guard PKPaymentAuthorizationViewController.canMakePayments() else {
@@ -360,7 +343,7 @@ class ApplePayButton: UIView, PKPaymentAuthorizationViewControllerDelegate {
         request.merchantCapabilities = merchantCapabilitiesValue
         request.countryCode = countryCode
         request.currencyCode = currencyCode
-        request.paymentSummaryItems = summaryItemsForRequest()
+        request.paymentSummaryItems = paymentSummaryItems
         
         guard let viewController = PKPaymentAuthorizationViewController(paymentRequest: request) else {
             showAlert("Error", "Unable to create payment authorization")
